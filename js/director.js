@@ -20,11 +20,11 @@ const NAMES = ['The Summons', 'The Prediction', 'Science & Sorcery', 'The Armour
 
 // the camera's path through the whole page: G = chapter index + progress through it
 // [G, position, look-at, fov, horizontal lens shift (the subject moves right for +)]
-// The first frames are the poster: MAKEATHON across the top, Doom standing below it, to the right.
+// The first frames: MAKEATHON on the left, Doom standing on the dais to the right.
 const K = (g, p, l, fov, sx) => ({ g, p: V(...p), l: V(...l), fov, sx });
 const KEYS = [
-  K(0.00, [0, 1.62, 7.6], [0, 1.72, 0], 30, 0.3),
-  K(0.45, [0.08, 1.62, 7.0], [0, 1.68, 0], 30, 0.3),
+  K(0.00, [0, 1.6, 6.4], [0, 1.42, 0], 30, 0.5),
+  K(0.45, [0.08, 1.6, 6.0], [0, 1.42, 0], 30, 0.5),
   K(0.80, [0.5, 1.56, 4.0], [0.02, 1.32, 0], 34, 0.28),
   K(1.00, [0.62, 1.52, 3.2], [0, 1.3, 0], 34, 0.2),
   K(1.45, [0.4, 1.5, 2.3], [-0.08, 1.36, 0.1], 34, 0.0),

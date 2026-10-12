@@ -257,15 +257,15 @@ export class UI {
     if (this.coarse) return;
     const cur = $('#cur'), ring = $('#curRing'), dot = $('#curDot');
     let x = -100, y = -100, rx = -100, ry = -100, on = false;
-    document.documentElement.classList.add('cur-on');
     window.addEventListener('pointermove', (e) => {
       if (e.pointerType !== 'mouse') return;
       x = e.clientX; y = e.clientY;
-      if (!on) { on = true; cur.classList.add('live'); rx = x; ry = y; }
+      // the system cursor hides only once the ring and dot are on screen
+      if (!on) { on = true; cur.classList.add('live'); document.documentElement.classList.add('cur-on'); rx = x; ry = y; }
       dot.style.transform = `translate3d(${x}px, ${y}px, 0)`;
       cur.classList.toggle('link', !!(e.target.closest && e.target.closest('a, button, .plate, input')));
     }, { passive: true });
-    document.addEventListener('mouseleave', () => { on = false; cur.classList.remove('live'); });
+    document.addEventListener('mouseleave', () => { on = false; cur.classList.remove('live'); document.documentElement.classList.remove('cur-on'); });
     window.addEventListener('pointerdown', () => cur.classList.add('down'), { passive: true });
     window.addEventListener('pointerup', () => cur.classList.remove('down'), { passive: true });
     const loop = () => {

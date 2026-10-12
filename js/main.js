@@ -55,6 +55,7 @@ async function cinematic() {
   try { engine = new Engine(document.getElementById('world'), { preserve: !!shot }); } catch (e) { toPlain(); return; }
   if (!engine.isWebGL2) { toPlain(); return; }
   const ui = new UI({ calm });
+  ui.initCursor();
   const subs = new Subs(document.getElementById('subsLine'), document.getElementById('subs'));
   if (!shot) { html.style.overflow = 'hidden'; window.scrollTo(0, 0); armMusic(); }
 
@@ -105,7 +106,6 @@ async function cinematic() {
   const parallel = engine.renderer.compileAsync && engine.renderer.extensions.has('KHR_parallel_shader_compile');
   try { await (parallel ? engine.renderer.compileAsync(engine.scene, engine.camera) : engine.renderer.compile(engine.scene, engine.camera)); } catch (e) { /* the first frames compile instead */ }
   engine.start();
-  ui.initCursor();
 
   if (mem.sworn && mem.name) {
     director.sworn = true;

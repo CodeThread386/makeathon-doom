@@ -42,7 +42,7 @@ export function coldRead(mem, mobile, now = new Date()) {
 // ---------------------------------------------------------------- the script: [from, to] in each chapter's progress
 // {D} becomes "Firmware. " once a domain is chosen. *word* renders green. side: where the line sits.
 export const LINES = {
-  summons: [{ a: 0.0, b: 0.52, text: '*Makeathon.* Real hardware. Real code. Doom requires your presence.', side: 'left' }],
+  summons: [{ a: 0.0, b: 0.52, text: '*Makeathon.* Real hardware. Real code. Doom requires your presence.', side: 'doom' }],
   prediction: [{ a: 0.06, b: 0.97, text: 'Do not open this. Doom already knows what you will choose.', side: 'center' }],
   thesis: [
     { a: 0.0, b: 0.4, text: 'Your teachers keep these two apart. Doom does not.', side: 'center' },
@@ -88,8 +88,7 @@ export class Subs {
   _place(side) {
     if (side === this.side) return;
     this.side = side;
-    this.wrap.classList.toggle('left', side === 'left');
-    this.wrap.classList.toggle('right', side === 'right');
+    for (const c of ['left', 'right', 'doom']) this.wrap.classList.toggle(c, side === c);
   }
   _show(o) {
     this.el.style.opacity = o.toFixed(3);
