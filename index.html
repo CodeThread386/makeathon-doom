@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Makeathon 2027</title>
 <meta name="description" content="Makeathon 2027 — the flagship hardware hackathon of the School of Electrical Engineering (SELECT) at VIT Vellore. Real hardware. Real code. Judged on what works.">
-<meta name="theme-color" content="#08110d">
+<meta name="theme-color" content="#17261f">
 <meta property="og:title" content="Makeathon 2027 · Doom requires your presence">
 <meta property="og:description" content="The flagship hardware hackathon of SELECT, VIT Vellore. Electrical and computer science, one machine.">
 <link rel="icon" type="image/svg+xml" href="./favicon.svg">
@@ -13,17 +13,18 @@
 <link rel="apple-touch-icon" href="./favicon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700;900&family=Barlow:wght@400;500;600&family=Barlow+Condensed:wght@400;500;600&family=DM+Mono:wght@400;500&family=Pinyon+Script&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;500;600&family=DM+Mono:wght@400;500&display=swap">
 <link rel="stylesheet" href="./css/site.css">
 <script>
-  // decide the mode before first paint: plain (no WebGL / asked for), calm (reduced motion)
+  // decide the mode before first paint: plain (no WebGL, or asked for); motion is on unless the visitor turned it off
   (function () {
     var d = document.documentElement, q = location.search, plain = /[?&]plain\b/.test(q);
-    try { if (!plain && localStorage.getItem('mk.plain') === '1') plain = true; } catch (e) {}
     if (!plain) { try { if (!document.createElement('canvas').getContext('webgl2')) plain = true; } catch (e) { plain = true; } }
+    // the plain version is the original O·Machine site
+    if (plain && !/[?&]shot=/.test(q)) { location.replace('./plain/'); return; }
     d.classList.add(plain ? 'is-plain' : 'is-cine');
-    var calm = matchMedia('(prefers-reduced-motion: reduce)').matches;
-    try { var m = localStorage.getItem('mk.motion'); if (m === 'off') calm = true; if (m === 'on') calm = false; } catch (e) {}
+    var calm = false;
+    try { calm = localStorage.getItem('mk.motion') === 'off'; } catch (e) {}
     if (calm) d.classList.add('is-calm');
     if (/[?&]shot=/.test(q)) d.classList.add('is-shot');
   })();
@@ -84,12 +85,12 @@
     <p class="cold-line" id="cold1"></p>
     <p class="cold-line cold-line--2" id="cold2"></p>
     <div class="cold-choice" id="coldChoice">
-      <button type="button" class="cold-btn" id="enterSound"><span class="cold-ico cold-ico--on" aria-hidden="true"></span>Enter with music</button>
-      <button type="button" class="cold-btn cold-btn--ghost" id="enterSilent"><span class="cold-ico" aria-hidden="true"></span>Enter in silence</button>
+      <button type="button" class="btn" id="enterSound">Enter with music <span class="arr" aria-hidden="true">→</span></button>
+      <button type="button" class="btn btn--ghost" id="enterSilent">Enter without music</button>
+      <a class="ul cold-plain" href="./plain/">Enter the plain version</a>
     </div>
     <p class="cold-load" id="coldLoad"></p>
   </div>
-  <button type="button" class="cold-skip" id="coldSkip">Skip intro</button>
 </div>
 
 <header class="hud" id="hud">
@@ -98,9 +99,8 @@
     <span class="brand-t">MAKEATHON<b>2027</b></span>
   </a>
   <div class="hud-ctl">
-    <button type="button" class="tgl" id="btnSound" aria-pressed="false"><i class="tgl-ico tgl-ico--snd" aria-hidden="true"></i><span class="tgl-l">Music</span> <b>Off</b></button>
+    <button type="button" class="tgl" id="btnSound" aria-pressed="true"><i class="tgl-ico tgl-ico--snd" aria-hidden="true"></i><span class="tgl-l">Music</span> <b>On</b></button>
     <button type="button" class="tgl" id="btnMotion" aria-pressed="true"><i class="tgl-ico tgl-ico--mot" aria-hidden="true"></i><span class="tgl-l">Motion</span> <b>On</b></button>
-    <a class="tgl" href="?plain" id="btnPlain">Plain version</a>
   </div>
 </header>
 
@@ -130,16 +130,22 @@
 
   <section class="act" id="summons" data-act="1" data-name="The Summons" data-len="2.6">
     <div class="stage">
-      <div class="blk blk--hero" data-in="0.44" data-out="1.0">
-        <p class="kicker">SELECT · VIT Vellore presents</p>
-        <h1 class="wordmark"><svg class="wordmark-m" aria-hidden="true"><use href="#m-logo"/></svg><span class="ln"><span>Makeathon</span></span><em>2027</em></h1>
-        <p class="lede">Real hardware. Real code. Judged on what works.</p>
-        <dl class="facts">
-          <div><dt>Format</dt><dd>Hardware hackathon</dd></div>
-          <div><dt>Hosted by</dt><dd>SELECT, VIT Vellore</dd></div>
-          <div><dt>Dates</dt><dd>To be announced</dd></div>
-        </dl>
-        <div class="row"><a class="btn" href="#oath" data-go="oath">Answer the summons <span class="arr" aria-hidden="true">→</span></a></div>
+      <div class="blk blk--hero" data-in="-0.05" data-out="0.9">
+        <div class="hero">
+          <svg class="hero-m" aria-hidden="true"><use href="#m-logo"/></svg>
+          <div class="hero-col">
+            <p class="hero-dim" aria-hidden="true"><span>2027</span></p>
+            <h1 class="wordmark"><span class="ln"><span>Makeathon</span></span><span class="sr-only"> 2027</span></h1>
+            <div class="hero-meta">
+              <dl class="facts">
+                <div><dt>Format</dt><dd>Hardware hackathon</dd></div>
+                <div><dt>Hosted by</dt><dd>SELECT · VIT Vellore</dd></div>
+                <div><dt>Dates</dt><dd class="tba"><i aria-hidden="true"></i>To be announced</dd></div>
+              </dl>
+              <a class="btn btn--ghost" href="#oath" data-go="oath">Answer the summons <span class="arr" aria-hidden="true">→</span></a>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
     <p class="say">“Makeathon. Real hardware. Real code. Doom requires your presence.”</p>
@@ -218,12 +224,12 @@
       </div>
       <div class="reel" id="reel" data-in="0.27" data-out="1.0">
         <div class="reel-frame" id="reelFrame">
-          <img src="./assets/a215f016ee0ca8ff86fce52a85060814.jpg" alt="The opening session on stage at Makeathon 2026" width="1003" height="660" decoding="async">
-          <img src="./assets/e353632797b6ad056b0f80c28a9ced17.jpg" alt="Teams working in the hall at Makeathon 2026" width="1002" height="678" decoding="async">
-          <img src="./assets/470679fce9e9e52c9468a0e41492b71a.jpg" alt="Participants gathered around a hardware build at Makeathon 2026" width="1001" height="665" decoding="async">
-          <img src="./assets/5118bed34c5cc9feac0a429ca3e45910.jpg" alt="A team presenting its prototype for review at Makeathon 2026" width="1006" height="672" decoding="async">
-          <img src="./assets/3c21e747e96b3baffdfce8bc286948d1.jpg" alt="A team demonstrating robot car prototypes at Makeathon 2026" width="990" height="667" decoding="async">
-          <img src="./assets/9be6e49e0345d2f2065191cff021ccd4.jpg" alt="The Makeathon 2026 winners on stage" width="1002" height="671" decoding="async">
+          <img src="./assets/a215f016ee0ca8ff86fce52a85060814.webp" alt="The opening session on stage at Makeathon 2026" width="1003" height="660" decoding="async">
+          <img src="./assets/e353632797b6ad056b0f80c28a9ced17.webp" alt="Teams working in the hall at Makeathon 2026" width="1002" height="678" decoding="async">
+          <img src="./assets/470679fce9e9e52c9468a0e41492b71a.webp" alt="Participants gathered around a hardware build at Makeathon 2026" width="1001" height="665" decoding="async">
+          <img src="./assets/5118bed34c5cc9feac0a429ca3e45910.webp" alt="A team presenting its prototype for review at Makeathon 2026" width="1006" height="672" decoding="async">
+          <img src="./assets/3c21e747e96b3baffdfce8bc286948d1.webp" alt="A team demonstrating robot car prototypes at Makeathon 2026" width="990" height="667" decoding="async">
+          <img src="./assets/9be6e49e0345d2f2065191cff021ccd4.webp" alt="The Makeathon 2026 winners on stage" width="1002" height="671" decoding="async">
           <i class="reel-scan" id="reelScan"></i>
           <i class="reel-c reel-c1"></i><i class="reel-c reel-c2"></i>
         </div>
@@ -306,7 +312,7 @@
           <div class="faq-i"><h3><button type="button" aria-expanded="false" aria-controls="fa3" id="fq3"><span class="faq-n">03</span>Who can take part?<i aria-hidden="true"></i></button></h3><div class="faq-a" id="fa3" role="region" aria-labelledby="fq3" hidden><p>Eligibility for 2027 will be published with registrations. The 2026 edition brought together students, researchers and professionals from more than 20 colleges.</p></div></div>
           <div class="faq-i"><h3><button type="button" aria-expanded="false" aria-controls="fa4" id="fq4"><span class="faq-n">04</span>Is it only for electrical engineering students?<i aria-hidden="true"></i></button></h3><div class="faq-a" id="fa4" role="region" aria-labelledby="fq4" hidden><p>No. Hardware is at the core, but computer science domains are part of the hack too, and teams that combine electrical, electronics and software skills are welcome.</p></div></div>
           <div class="faq-i"><h3><button type="button" aria-expanded="false" aria-controls="fa5" id="fq5"><span class="faq-n">05</span>What will the tracks be?<i aria-hidden="true"></i></button></h3><div class="faq-a" id="fa5" role="region" aria-labelledby="fq5" hidden><p>Tracks and problem statements are being finalised with industry partners. In 2026 they spanned defence, mobility, disaster resilience, agriculture and open innovation.</p></div></div>
-          <div class="faq-i"><h3><button type="button" aria-expanded="false" aria-controls="fa6" id="fq6"><span class="faq-n">06</span>How can my organisation partner with Makeathon?<i aria-hidden="true"></i></button></h3><div class="faq-a" id="fa6" role="region" aria-labelledby="fq6" hidden><p>Write to us using the contact details below. We will share the partnership deck and the ways to get involved, from contributing problem statements to judging and prizes.</p></div></div>
+          <div class="faq-i"><h3><button type="button" aria-expanded="false" aria-controls="fa6" id="fq6"><span class="faq-n">06</span>How can my organisation partner with Makeathon?<i aria-hidden="true"></i></button></h3><div class="faq-a" id="fa6" role="region" aria-labelledby="fq6" hidden><p>Write to us using the contact details alongside. We will share the partnership deck and the ways to get involved, from contributing problem statements to judging and prizes.</p></div></div>
         </div>
       </div>
       <div class="contact" id="contact">

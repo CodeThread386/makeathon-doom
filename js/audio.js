@@ -8,6 +8,7 @@ export class Audio {
   constructor(base = './assets/audio/') {
     this.base = base;
     this.enabled = false;
+    this.playing = false;
     this.ctx = null;
     this.buf = {};
     this.motion = 0; this.dip = 0;
@@ -29,19 +30,20 @@ export class Audio {
       try { this.ctx.createMediaElementSource(this.el).connect(this.musicGain); } catch (e) { /* fall back to the element's own output */ }
       this._loadCues();
     }
-    if (this.ctx.state === 'suspended') { try { await this.ctx.resume(); } catch (e) { /* ignored */ } }
-    try { await this.el.play(); } catch (e) { /* needs a gesture; the next click retries */ }
+    // before the first click or key press the browser refuses; the next gesture calls this again
+    if (this.ctx.state === 'suspended') this.ctx.resume().catch(() => {});
+    try { await this.el.play(); this.playing = true; } catch (e) { this.playing = false; }
     const t = this.ctx.currentTime;
     this.master.gain.cancelScheduledValues(t);
     this.master.gain.setTargetAtTime(1, t, 0.8);
-    return true;
+    return this.playing;
   }
 
   disable() {
     this.enabled = false;
     if (!this.ctx) return;
     this.master.gain.setTargetAtTime(0.0001, this.ctx.currentTime, 0.25);
-    setTimeout(() => { if (!this.enabled && this.el) this.el.pause(); }, 1200);
+    setTimeout(() => { if (!this.enabled && this.el) { this.el.pause(); this.playing = false; } }, 1200);
   }
 
   async _loadCues() {

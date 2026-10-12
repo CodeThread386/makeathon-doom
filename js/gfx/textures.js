@@ -96,7 +96,7 @@ export function runeTexture(seed = 7, size = 1024) {
   x.stroke();
   // ticks
   for (let k = 0; k < 120; k++) { x.lineWidth = k % 10 === 0 ? 3 : 1; x.save(); x.rotate(k / 120 * Math.PI * 2); x.beginPath(); x.moveTo(0, -C * 0.9); x.lineTo(0, -C * (k % 10 === 0 ? 0.84 : 0.875)); x.stroke(); x.restore(); }
-  x.font = `700 ${size * 0.07}px Cinzel, serif`; x.fillText('{ }', 0, 0);
+  x.font = `500 ${size * 0.07}px "DM Mono", monospace`; x.fillText('{ }', 0, 0);
   return tex(c);
 }
 
@@ -128,7 +128,7 @@ export function plateTextures(name, numeral, desc, unit) {
   xi.lineWidth = 3; xi.beginPath(); xi.moveTo(W * 0.3, H * 0.215); xi.lineTo(W * 0.7, H * 0.215); xi.stroke();
   fit(xi, name.toUpperCase(), '600', 168, '"Barlow Condensed", sans-serif', W * 0.88);
   xi.fillText(name.toUpperCase(), W / 2, H * 0.32);
-  xi.font = '500 62px Barlow, sans-serif';
+  xi.font = '500 64px "Barlow Condensed", sans-serif';
   wrap(xi, desc, W / 2, H * 0.47, W * 0.8, 74);
   return { outer: tex(co, false), inner: tex(ci, false) };
 }
@@ -158,16 +158,16 @@ export function scrollTexture() {
   for (let i = 0; i < 2200; i++) { b.fillStyle = `rgba(90,60,25,${R() * 0.05})`; b.fillRect(R() * W, R() * H, 1 + R() * 3, 1 + R() * 3); }
   b.strokeStyle = 'rgba(60,40,15,0.35)'; b.lineWidth = 2; b.strokeRect(40, 40, W - 80, H - 80);
   b.fillStyle = 'rgba(40,26,10,0.85)'; b.textAlign = 'center';
-  b.font = '700 44px Cinzel, serif'; b.fillText('THE OATH', W / 2, 120);
-  b.font = '500 26px Cinzel, serif'; b.fillText('I answer the summons of Makeathon MMXXVII.', W / 2, 180);
+  b.font = '600 64px "Barlow Condensed", sans-serif'; b.fillText('THE OATH', W / 2, 124);
+  b.font = '500 22px "DM Mono", monospace'; b.fillText('I ANSWER THE SUMMONS OF MAKEATHON 2027', W / 2, 184);
   b.strokeStyle = 'rgba(40,26,10,0.55)'; b.lineWidth = 2; b.beginPath(); b.moveTo(170, 400); b.lineTo(W - 170, 400); b.stroke();
   b.font = '500 20px "DM Mono", monospace'; b.fillText('INSCRIBED ADDRESS', W / 2, 440);
   const draw = (text, glow) => {
     x.drawImage(base, 0, 0);
     if (text) {
       x.save(); x.textAlign = 'center'; x.fillStyle = '#1d140a';
-      let s = 64; x.font = `400 ${s}px "Pinyon Script", cursive`;
-      while (x.measureText(text).width > W - 300 && s > 26) { s -= 2; x.font = `400 ${s}px "Pinyon Script", cursive`; }
+      let s = 72; x.font = `500 ${s}px "Barlow Condensed", sans-serif`;
+      while (x.measureText(text).width > W - 300 && s > 26) { s -= 2; x.font = `500 ${s}px "Barlow Condensed", sans-serif`; }
       if (glow) { x.shadowColor = 'rgba(70,235,147,0.9)'; x.shadowBlur = 18 * glow; }
       x.fillText(text, W / 2, 385); x.restore();
     }

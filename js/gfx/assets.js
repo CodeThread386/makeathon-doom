@@ -28,9 +28,9 @@ export async function loadCore(engine, onProgress, base = './') {
   }, undefined, () => res(null)));
   const [gltf, hdr, stoneD, stoneN, stoneR, suedeN] = await Promise.all([
     new GLTFLoader(manager).loadAsync(u('./assets/models/doom.glb')),
-    new RGBELoader(manager).loadAsync(u('./assets/env/studio_small_08_1k.hdr')).catch(() => null),
-    T(u('./assets/tex/stone_diff.jpg'), true), T(u('./assets/tex/stone_nor.jpg'), false), T(u('./assets/tex/stone_rough.jpg'), false),
-    T(u('./assets/tex/suede_nor.jpg'), false)
+    new RGBELoader(manager).loadAsync(u('./assets/env/studio_small_08_512.hdr')).catch(() => null),
+    T(u('./assets/tex/stone_diff.webp'), true), T(u('./assets/tex/stone_nor.webp'), false), T(u('./assets/tex/stone_rough.webp'), false),
+    T(u('./assets/tex/suede_nor.webp'), false)
   ]);
   let env = null;
   if (hdr) {

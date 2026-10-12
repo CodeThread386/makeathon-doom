@@ -3,12 +3,19 @@
 <head>
 <meta charset="utf-8">
 <title>Makeathon 2027</title>
-<link rel="icon" type="image/svg+xml" href="./favicon.svg">
-<link rel="alternate icon" href="./favicon.ico">
-<link rel="apple-touch-icon" href="./favicon.png">
+<link rel="icon" type="image/svg+xml" href="../favicon.svg">
+<link rel="alternate icon" href="../favicon.ico">
+<link rel="apple-touch-icon" href="../favicon.png">
 <script src="./vendor/react.js"></script>
 <script src="./vendor/react-dom.js"></script>
 <script src="./support.js"></script>
+<style>
+  /* the plain version: the original machine, a little calmer */
+  .k-redact{animation:none!important}
+  .k-mq{animation-duration:70s!important}
+  .k-bob,.k-shadow{animation-duration:9s!important}
+  .k-led{animation-duration:3s!important}
+</style>
 </head>
 <body>
 <x-dc>
@@ -321,12 +328,12 @@ button:hover{filter:brightness(1.08)}
 </div>
 <div style="position: absolute; left: 96px; right: 96px; top: 372px; display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); border-top: 1px solid rgba(237,241,239,0.3); border-bottom: 1px solid rgba(237,241,239,0.3); background-color: rgba(23,38,31,0.6); opacity: {{cnOp}}; transform: translateY({{cnY}}); pointer-events: none"><div style="padding: 22px 0px 22px 0px;"><div style="font-weight: 600; font-size: 84px; line-height: 1">{{n0}}</div><div class="k-mono" style="font-size: 13px; letter-spacing: 0.16em; color: #9BACA4; margin-top: 8px">TEAMS</div></div><div style="padding: 22px 0px 22px 28px; border-left: 1px solid rgba(237,241,239,0.25);"><div style="font-weight: 600; font-size: 84px; line-height: 1">{{n1}}</div><div class="k-mono" style="font-size: 13px; letter-spacing: 0.16em; color: #9BACA4; margin-top: 8px">PARTICIPANTS</div></div><div style="padding: 22px 0px 22px 28px; border-left: 1px solid rgba(237,241,239,0.25);"><div style="font-weight: 600; font-size: 84px; line-height: 1">{{n2}}</div><div class="k-mono" style="font-size: 13px; letter-spacing: 0.16em; color: #9BACA4; margin-top: 8px">INDUSTRY JUDGES</div></div><div style="padding: 22px 0px 22px 28px; border-left: 1px solid rgba(237,241,239,0.25);"><div style="font-weight: 600; font-size: 84px; line-height: 1">{{n3}}</div><div class="k-mono" style="font-size: 13px; letter-spacing: 0.16em; color: #9BACA4; margin-top: 8px">COLLEGES</div></div><div style="padding: 22px 0px 22px 28px; border-left: 1px solid rgba(237,241,239,0.25);"><div style="font-weight: 600; font-size: 84px; line-height: 1">{{n4}}</div><div class="k-mono" style="font-size: 13px; letter-spacing: 0.16em; color: #9BACA4; margin-top: 8px">HOURS</div></div></div>
 <div style="position: absolute; left: 96px; top: 304px; width: 720px; height: 450px; overflow: hidden; box-sizing: border-box; border: 1px solid rgba(237,241,239,0.35); background-color: #1B2C24; opacity: {{rlOp}}; transform: translateY({{rlY}}); pointer-events: none">
-<img class="k-photo" src="./assets/a215f016ee0ca8ff86fce52a85060814.jpg" alt="The opening session on stage at Makeathon 2026" style="position: absolute; left: 0px; top: 0px; width: 100%; height: 100%; object-fit: cover; clip-path: inset(0px 0px {{cp0}} 0px)">
-<img class="k-photo" src="./assets/e353632797b6ad056b0f80c28a9ced17.jpg" alt="Teams working in the hall at Makeathon 2026" style="position: absolute; left: 0px; top: 0px; width: 100%; height: 100%; object-fit: cover; clip-path: inset(0px 0px {{cp1}} 0px)">
-<img class="k-photo" src="./assets/470679fce9e9e52c9468a0e41492b71a.jpg" alt="Participants gathered around a hardware build at Makeathon 2026" style="position: absolute; left: 0px; top: 0px; width: 100%; height: 100%; object-fit: cover; clip-path: inset(0px 0px {{cp2}} 0px)">
-<img class="k-photo" src="./assets/5118bed34c5cc9feac0a429ca3e45910.jpg" alt="A team presenting its prototype for review at Makeathon 2026" style="position: absolute; left: 0px; top: 0px; width: 100%; height: 100%; object-fit: cover; clip-path: inset(0px 0px {{cp3}} 0px)">
-<img class="k-photo" src="./assets/3c21e747e96b3baffdfce8bc286948d1.jpg" alt="A team demonstrating robot car prototypes at Makeathon 2026" style="position: absolute; left: 0px; top: 0px; width: 100%; height: 100%; object-fit: cover; clip-path: inset(0px 0px {{cp4}} 0px)">
-<img class="k-photo" src="./assets/9be6e49e0345d2f2065191cff021ccd4.jpg" alt="The Makeathon 2026 winners on stage" style="position: absolute; left: 0px; top: 0px; width: 100%; height: 100%; object-fit: cover; clip-path: inset(0px 0px {{cp5}} 0px)">
+<img class="k-photo" src="../assets/a215f016ee0ca8ff86fce52a85060814.webp" alt="The opening session on stage at Makeathon 2026" style="position: absolute; left: 0px; top: 0px; width: 100%; height: 100%; object-fit: cover; clip-path: inset(0px 0px {{cp0}} 0px)">
+<img class="k-photo" src="../assets/e353632797b6ad056b0f80c28a9ced17.webp" alt="Teams working in the hall at Makeathon 2026" style="position: absolute; left: 0px; top: 0px; width: 100%; height: 100%; object-fit: cover; clip-path: inset(0px 0px {{cp1}} 0px)">
+<img class="k-photo" src="../assets/470679fce9e9e52c9468a0e41492b71a.webp" alt="Participants gathered around a hardware build at Makeathon 2026" style="position: absolute; left: 0px; top: 0px; width: 100%; height: 100%; object-fit: cover; clip-path: inset(0px 0px {{cp2}} 0px)">
+<img class="k-photo" src="../assets/5118bed34c5cc9feac0a429ca3e45910.webp" alt="A team presenting its prototype for review at Makeathon 2026" style="position: absolute; left: 0px; top: 0px; width: 100%; height: 100%; object-fit: cover; clip-path: inset(0px 0px {{cp3}} 0px)">
+<img class="k-photo" src="../assets/3c21e747e96b3baffdfce8bc286948d1.webp" alt="A team demonstrating robot car prototypes at Makeathon 2026" style="position: absolute; left: 0px; top: 0px; width: 100%; height: 100%; object-fit: cover; clip-path: inset(0px 0px {{cp4}} 0px)">
+<img class="k-photo" src="../assets/9be6e49e0345d2f2065191cff021ccd4.webp" alt="The Makeathon 2026 winners on stage" style="position: absolute; left: 0px; top: 0px; width: 100%; height: 100%; object-fit: cover; clip-path: inset(0px 0px {{cp5}} 0px)">
 <div aria-hidden="true" style="position: absolute; left: 0px; right: 0px; top: {{rsY}}; height: 2px; background-color: #F2B84B; box-shadow: 0px 0px 18px 2px rgba(242,184,75,0.75); opacity: {{rsOp}}"></div>
 <span aria-hidden="true" style="position: absolute; left: 10px; top: 10px; width: 16px; height: 16px; border-left: 2px solid #EDF1EF; border-top: 2px solid #EDF1EF"></span>
 <span aria-hidden="true" style="position: absolute; right: 10px; bottom: 10px; width: 16px; height: 16px; border-right: 2px solid #EDF1EF; border-bottom: 2px solid #EDF1EF"></span>

@@ -3,7 +3,7 @@ import * as THREE from 'three';
 
 const R = (a, b) => a + Math.random() * (b - a);
 
-// rising embers from the forge, and dust motes that light up inside the gauntlet's pool
+// drifting motes: faint dust in the air, and the magic rising under the oath scroll
 export class Motes {
   constructor({ count, box, color, size, rise = 0, swirl = 0.3, lightPos = null, additive = true, base = 0.25 }) {
     const g = new THREE.BufferGeometry();

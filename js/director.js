@@ -20,11 +20,12 @@ const NAMES = ['The Summons', 'The Prediction', 'Science & Sorcery', 'The Armour
 
 // the camera's path through the whole page: G = chapter index + progress through it
 // [G, position, look-at, fov, horizontal lens shift (the subject moves right for +)]
+// The first frames are the poster: MAKEATHON across the top, Doom standing below it, to the right.
 const K = (g, p, l, fov, sx) => ({ g, p: V(...p), l: V(...l), fov, sx });
 const KEYS = [
-  K(0.00, [0.03, 1.79, 0.62], [0, 1.77, 0], 30, 0),
-  K(0.30, [0.12, 1.76, 1.4], [0, 1.71, 0], 31, 0),
-  K(0.64, [0.5, 1.56, 3.4], [0.02, 1.28, 0], 34, 0.3),
+  K(0.00, [0, 1.62, 7.6], [0, 1.72, 0], 30, 0.3),
+  K(0.45, [0.08, 1.62, 7.0], [0, 1.68, 0], 30, 0.3),
+  K(0.80, [0.5, 1.56, 4.0], [0.02, 1.32, 0], 34, 0.28),
   K(1.00, [0.62, 1.52, 3.2], [0, 1.3, 0], 34, 0.2),
   K(1.45, [0.4, 1.5, 2.3], [-0.08, 1.36, 0.1], 34, 0.0),
   K(1.95, [0.5, 1.62, 3.6], [0, 1.45, 0], 36, 0),
@@ -47,6 +48,10 @@ const KEYS = [
   K(8.5, [0.35, 1.6, 6.0], [0, 1.4, -0.5], 30, 0),
   K(9.0, [0.3, 1.6, 6.5], [0, 1.45, -0.5], 28, 0)
 ];
+// the intro's close-up on the forge-hot mask, released into the poster framing
+const CLOSE = { pos: V(0.03, 1.79, 0.62), look: V(0, 1.77, 0), fov: 30 };
+// Doom stands on the dais (its top is 0.1 m up), so the whole path rides 0.1 m higher than it was drawn
+const CAM_Y = 0.1;
 const cr = (p0, p1, p2, p3, t) => { const t2 = t * t, t3 = t2 * t; return 0.5 * ((2 * p1) + (-p0 + p2) * t + (2 * p0 - 5 * p1 + 4 * p2 - p3) * t2 + (-p0 + 3 * p1 - 3 * p2 + p3) * t3); };
 function camAt(G) {
   let i = 0;
@@ -55,7 +60,7 @@ function camAt(G) {
   const u = clamp((G - b.g) / Math.max(1e-4, c.g - b.g), 0, 1);
   const t = s5(u) * 0.6 + u * 0.4;
   const v = (k) => new THREE.Vector3(cr(a[k].x, b[k].x, c[k].x, d[k].x, t), cr(a[k].y, b[k].y, c[k].y, d[k].y, t), cr(a[k].z, b[k].z, c[k].z, d[k].z, t));
-  return { pos: v('p'), look: v('l'), fov: cr(a.fov, b.fov, c.fov, d.fov, t), sx: cr(a.sx, b.sx, c.sx, d.sx, t) };
+  return { pos: v('p').setY(v('p').y + CAM_Y), look: v('l').setY(v('l').y + CAM_Y), fov: cr(a.fov, b.fov, c.fov, d.fov, t), sx: cr(a.sx, b.sx, c.sx, d.sx, t) };
 }
 
 // light and grade per chapter, blended across boundaries
@@ -90,6 +95,7 @@ export class Director {
     this.mobile = window.innerWidth <= 760;
     this.gaze = V(0, 1.7, 5);
     this.envDocked = false;
+    this.introCam = 1;
     this.front = 0;
     this._bloomKick = 0;
     this.scrollState = { crumple: 0, crumpleGoal: 0, roll: 0, rollGoal: 0 };
@@ -170,7 +176,7 @@ export class Director {
         this.ui.veilTo(false);
         if (focusForm) setTimeout(() => document.getElementById('email').focus({ preventScroll: true }), 500);
       }));
-    }, this.calm ? 40 : 520);
+    }, this.calm ? 40 : 500);
   }
 
   // ------------------------------------------------------------------ the choice
@@ -259,43 +265,57 @@ export class Director {
     this.subs.say('It is done. Doom will write to you first.');
   }
 
-  // ------------------------------------------------------------------ the intro (time-based: the reader is not scrolling yet)
+  // ------------------------------------------------------------------ the intro (time-based, about a second and a half; any scroll finishes it)
   async playIntro() {
-    const D = this.doom, W = this.world, G = window.gsap, post = this.engine.post;
+    const D = this.doom, G = window.gsap, post = this.engine.post;
     D.eyes = 0; D.setHeat(1, 2.3);
-    this.introLight = 1;
-    W.embers.uniforms.uOpacity.value = 1;
+    this.introLight = 1; this.introCam = 1;
     post.exposure = 0.6;
     post.flash.set(1.0, 0.45, 0.12, 0.4);
+    if (!G || this.calm) { this.finishIntro(); return; }
     const heat = { h: 1, top: 2.3 };
-    if (G && !this.calm) {
-      G.to(post, { exposure: 1, duration: 1.6 });
-      G.to(heat, { h: 0, top: -0.4, duration: 3.6, ease: 'power2.inOut', onUpdate: () => D.setHeat(heat.h, heat.top) });
-      G.to(this, { introLight: 0, duration: 4.2, ease: 'power2.in' });
-      G.to(W.embers.uniforms.uOpacity, { value: 0, duration: 5, delay: 1.5 });
-      await wait(3500);
-    } else { D.setHeat(0); this.introLight = 0; W.embers.uniforms.uOpacity.value = 0; }
+    this._introTweens = [
+      G.to(post, { exposure: 1, duration: 0.9 }),
+      G.to(heat, { h: 0, top: -0.4, duration: 1.8, ease: 'power2.inOut', onUpdate: () => D.setHeat(heat.h, heat.top) }),
+      G.to(this, { introLight: 0, duration: 2.0, ease: 'power2.in' }),
+      G.to(this, { introCam: 0, duration: 1.5, delay: 0.3, ease: 'power2.inOut' })
+    ];
+    await new Promise((r) => { this._introWake = r; setTimeout(r, 1250); });
+    this.finishIntro(true);
+  }
+  // natural: the eyes ignite on cue; otherwise the reader scrolled, so everything settles at once
+  finishIntro(natural) {
+    if (this.introDone) return;
+    const D = this.doom, G = window.gsap, post = this.engine.post;
+    if (!natural) {
+      (this._introTweens || []).forEach((tw) => tw.kill());
+      D.setHeat(0); this.introLight = 0; post.exposure = 1;
+      if (G && !this.calm && this.introCam > 0) G.to(this, { introCam: 0, duration: 0.6, ease: 'power2.out' }); else this.introCam = 0;
+    }
     D.eyes = 3.2;
-    post.flash.set(0.3, 1.0, 0.55, 0.18);
+    post.flash.set(0.3, 1.0, 0.55, natural ? 0.18 : 0.08);
     this.audio.play('seal', { vol: 0.35, rate: 0.5 });
     this.introDone = true;
     this.ui.showChrome();
+    if (this._introWake) this._introWake();
   }
-  skipIntro() { this.doom.setHeat(0); this.doom.eyes = 1; this.introLight = 0; this.introDone = true; this.ui.showChrome(); }
+  skipIntro() { this.doom.setHeat(0); this.doom.eyes = 1; this.introLight = 0; this.introCam = 0; this.introDone = true; this.ui.showChrome(); }
 
   // ------------------------------------------------------------------ the frame
   update(dt, time) {
     const ui = this.ui, W = this.world, D = this.doom, eng = this.engine;
     if (!ui.acts[0].h) ui.measure();
-    // Lenis already eases the page; a second, slower ease drives the world so nothing ever jerks
+    // Lenis eases the page; the world follows it closely (one smoothing layer, not two)
     const prev = this.pS;
     this.p = window.scrollY;
     if (this._snap) { this.pS = this.p; this._snap = false; }
-    this.pS = damp(this.pS, this.p, this.calm ? 30 : 4.5, dt);
+    this.pS = damp(this.pS, this.p, this.calm ? 30 : 12, dt);
     const v = (this.pS - prev) / Math.max(dt, 1e-3);
     this.vel = damp(this.vel, v, 5, dt);
     this.motion = damp(this.motion, clamp(Math.abs(this.vel) / 900, 0, 1), Math.abs(this.vel) > 30 ? 3 : 1.2, dt);
     const vh = window.innerHeight, P = this.pS;
+    // the resolution only steps up again while the page is still, never mid-scroll
+    eng.busy = Math.abs(this.vel) > 60;
 
     let idx = 0, t = 0;
     ui.acts.forEach((a, i) => {
@@ -353,6 +373,12 @@ export class Director {
 
     // camera
     const cam = camAt(this.G);
+    if (this.introCam > 0) {
+      const k = this.introCam;
+      cam.pos.lerp(CLOSE.pos.clone().setY(CLOSE.pos.y + CAM_Y), k);
+      cam.look.lerp(CLOSE.look.clone().setY(CLOSE.look.y + CAM_Y), k);
+      cam.fov = lerp(cam.fov, CLOSE.fov, k); cam.sx = lerp(cam.sx, 0, k);
+    }
     if (this.mobile) {
       cam.sx = 0;
       const d = cam.pos.clone().sub(cam.look); cam.pos.copy(cam.look).addScaledVector(d, 1.32); cam.fov += 6;
@@ -380,7 +406,6 @@ export class Director {
     W.update(dt, time);
     D.update(dt, time);
     this._props(id, t, dt);
-    this.ui.cursorDoom(!!this._overDoom);
   }
 
   // ------------------------------------------------------------------ chapter choreography (all scrubbed by t)
@@ -600,13 +625,5 @@ export class Director {
       if (this._diss > 0.01) { W.seal.scale.setScalar(Math.max(0.001, 1 - this._diss)); if (this._diss > 0.95) W.seal.visible = false; }
       W.fill.position.copy(pos).add(V(0.1, 0.15, 0.4)); W.fill.intensity = 0.9 * mg;
     } else { W.fill.intensity = 0; W.magicLight.intensity = 0; if (!this._sealing) W.seal.visible = false; }
-    // hovering Doom changes the cursor: a hint that he can be poked
-    if (this.pointer.has && !this.pointer.overUI && !this.ui.coarse && performance.now() - this.pointer.t < 1500) {
-      this._hoverCheck = (this._hoverCheck || 0) + 1;
-      if (this._hoverCheck % 6 === 0) {
-        this.raycaster.setFromCamera(new THREE.Vector2(this.pointer.nx, this.pointer.ny), this.cam);
-        this._overDoom = this.raycaster.intersectObjects(D.meshes, false).length > 0;
-      }
-    } else this._overDoom = false;
   }
 }

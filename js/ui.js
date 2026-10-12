@@ -252,7 +252,7 @@ export class UI {
     this._byeSpans.forEach((s, i) => s.classList.toggle('on', i < n));
   }
 
-  // ---------------------------------------------------------------- cursor: the dot is exact, the ring trails
+  // ---------------------------------------------------------------- cursor: a ring and a dot. The dot is exact, the ring trails
   initCursor() {
     if (this.coarse) return;
     const cur = $('#cur'), ring = $('#curRing'), dot = $('#curDot');
@@ -263,11 +263,11 @@ export class UI {
       x = e.clientX; y = e.clientY;
       if (!on) { on = true; cur.classList.add('live'); rx = x; ry = y; }
       dot.style.transform = `translate3d(${x}px, ${y}px, 0)`;
-      const t = e.target;
-      cur.classList.toggle('link', !!(t.closest && t.closest('a, button, .plate')));
-      cur.classList.toggle('text', !!(t.closest && t.closest('input')));
+      cur.classList.toggle('link', !!(e.target.closest && e.target.closest('a, button, .plate, input')));
     }, { passive: true });
     document.addEventListener('mouseleave', () => { on = false; cur.classList.remove('live'); });
+    window.addEventListener('pointerdown', () => cur.classList.add('down'), { passive: true });
+    window.addEventListener('pointerup', () => cur.classList.remove('down'), { passive: true });
     const loop = () => {
       rx += (x - rx) * 0.35; ry += (y - ry) * 0.35;
       ring.style.transform = `translate3d(${rx.toFixed(1)}px, ${ry.toFixed(1)}px, 0)`;
@@ -275,8 +275,20 @@ export class UI {
     };
     requestAnimationFrame(loop);
     this.cursor = cur;
+    this._magnets();
   }
-  cursorDoom(on) { if (this.cursor) this.cursor.classList.toggle('doom', on); }
+  // buttons lean a few pixels toward the pointer, no more
+  _magnets() {
+    $$('.btn, .tgl').forEach((el) => {
+      el.addEventListener('pointermove', (e) => {
+        if (e.pointerType !== 'mouse' || this.calm) return;
+        const r = el.getBoundingClientRect();
+        const dx = clamp((e.clientX - (r.left + r.width / 2)) * 0.08, -4, 4), dy = clamp((e.clientY - (r.top + r.height / 2)) * 0.12, -3, 3);
+        el.style.translate = `${dx.toFixed(1)}px ${dy.toFixed(1)}px`;
+      });
+      el.addEventListener('pointerleave', () => { el.style.translate = ''; });
+    });
+  }
 
   _faq() {
     $$('#faqList button').forEach((b) => b.addEventListener('click', () => {

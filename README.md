@@ -11,18 +11,18 @@ python3 -m http.server 8765
 # http://127.0.0.1:8765/
 ```
 
-The page needs WebGL2. Without it, or with `?plain`, it shows a plain, readable version of all the content. That version is also what screen readers read.
+The page needs WebGL2. Without it, or with `?plain`, it opens the plain version in `plain/`: the original O·Machine site, slightly calmer.
 
 Useful parameters:
 
 - `?shot=archive:0.6` jumps straight to a chapter at a given progress (0–1). Chapters: `summons`, `prediction`, `thesis`, `armoury`, `archive`, `future`, `oath`, `bench`, `farewell`.
-- `?plain` opens the plain version.
+- `?plain` opens the plain version (`plain/`).
 
 ## The chapters
 
 | # | Chapter | What happens (scrubbed by scroll) |
 |---|---------|-----------------------------------|
-| 0 | Cold read | Types the visitor's real local time. Adds a line on phones and another on a return visit. The visitor chooses music or silence. |
+| 0 | Cold read | Types the visitor's real local time, then offers: Enter with music, Enter without music, or Enter the plain version. Scrolling here enters with music. The forge intro takes about a second and a half, and scrolling finishes it. |
 | I | The Summons | The armour cools from white-hot, the eyes ignite, and the pitch line is written word by word. |
 | II | The Prediction | Doom offers a sealed envelope. It flies to the corner and stays there. |
 | III | Science & Sorcery | A blueprint and a rune circle slide in and are pushed together into the M logo. |
@@ -39,6 +39,7 @@ Running throughout:
 - Ten clicks on him gets "ENOUGH."
 - The music dips before the two big moments.
 - A progress line traces the frame, with a "Next" chapter label.
+- Music and motion are on by default (browsers start the music at the first click or key press); both have toggles in the top bar.
 
 ## Wire up the sign-up
 
@@ -49,7 +50,7 @@ The form is front-end only for now. In `js/main.js`, replace `submitEmail(email)
 ```
 index.html            content, semantic markup, the plain version
 css/site.css          layout, the frame, typography, plain + reduced-motion modes
-js/main.js            boot: cold read, loading, Lenis smooth scroll, toggles
+js/main.js            boot: cold read and the opening choice, loading, Lenis smooth scroll, toggles
 js/director.js        scroll → camera path, chapters, gestures, light, music, gaze, idle
 js/story.js           memory (localStorage), the cold read, Doom's lines, scrubbed subtitles
 js/ui.js              scrubbed blocks, frame trace, reel, counters, envelope, shatter, cursor
@@ -62,9 +63,8 @@ js/gfx/particles.js   embers, dust, warp streaks, fog
 js/gfx/textures.js    canvas-drawn blueprint, code runes, plate engravings, oath scroll
 assets/               model, HDRI, textures, audio, event photos
 vendor/               three.js r170, GSAP, Lenis
+plain/                the plain version: the original O·Machine site (its own runtime and React)
 ```
-
-`O-Machine.dc.html`, `support.js` and `vendor/react*.js` are the original O·Machine design export, kept for reference. The new site doesn't use them.
 
 ## The Doom model
 
@@ -72,7 +72,7 @@ vendor/               three.js r170, GSAP, Lenis
 
 - the deform bones were given a real parent hierarchy (Auto-Rig Pro drives them with constraints, which glTF can't carry);
 - the static cloak was removed and replaced by the simulated cape;
-- the textures were exported as JPEG, so the model is 2.1 MB.
+- the textures were exported as WebP, so the model is 1.6 MB.
 
 The model depicts Marvel's Doctor Doom, and its textures look like they come from a game asset. Check the rights before making the site public.
 

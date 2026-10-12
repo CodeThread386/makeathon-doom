@@ -21,8 +21,10 @@ export class World {
     this.engine = engine; this.A = assets;
     const S = engine.scene;
     this.scene = S;
-    S.background = new THREE.Color(0x07100c);
-    S.fog = new THREE.FogExp2(0x07100c, 0.055);
+    // O·Machine's bottle green (#17261F on screen), given in linear values from before the tone map and grade
+    const BG = new THREE.Color().setRGB(0.0063, 0.0131, 0.0099, THREE.LinearSRGBColorSpace);
+    S.background = BG;
+    S.fog = new THREE.FogExp2(BG.clone(), 0.055);
     if (assets.env) { S.environment = assets.env; S.environmentIntensity = 0.32; }
     this._lights();
     this._ground();
@@ -30,11 +32,8 @@ export class World {
     this._armoury();
     this._time();
     this._props();
-    this.dust = new Motes({ count: engine.tier === 2 ? 260 : 520, box: [-5, 0.1, -4, 5, 4.2, 4], color: 0xbfe8d0, size: 7, swirl: 0.35, base: 0.06 });
+    this.dust = new Motes({ count: engine.tier === 2 ? 160 : 300, box: [-5, 0.1, -4, 5, 4.2, 4], color: 0xc1cbc6, size: 6, swirl: 0.25, base: 0.04 });
     S.add(this.dust.points);
-    this.embers = new Motes({ count: 260, box: [-1.4, 0.0, -1.0, 1.4, 3.2, 1.2], color: 0xff8a30, size: 16, rise: 0.5, swirl: 0.22, base: 0.9 });
-    this.embers.uniforms.uOpacity.value = 0;
-    S.add(this.embers.points);
     const sprite = softSprite(128);
     this.fog = new Fog(sprite, { count: engine.tier === 2 ? 16 : 30, box: [-6, 0.1, -9, 6, 2.4, 3.5], color: 0x1d3328, opacity: 0.32, size: [5, 11] });
     this.fog.opacity = 0;
@@ -72,9 +71,9 @@ export class World {
         void main(){
           vec2 p = vW.xz;
           float r = length(p);
-          float fine = grid(p, 0.25, 1.0) * 0.06;
-          float major = grid(p, 1.0, 1.2) * 0.16;
-          vec3 col = vec3(0.012, 0.022, 0.018);
+          float fine = grid(p, 0.25, 1.0) * 0.035;
+          float major = grid(p, 1.0, 1.2) * 0.1;
+          vec3 col = vec3(0.0063, 0.0131, 0.0099);
           col += vec3(0.95, 0.72, 0.29) * (fine + major) * smoothstep(9.0, 1.5, r);
           col += vec3(0.27, 0.92, 0.58) * 0.05 * uGlow * smoothstep(3.0, 0.0, r);
           gl_FragColor = vec4(col, 1.0);
@@ -356,7 +355,6 @@ export class World {
   update(dt, time) {
     const pix = this.engine.ph / 900;
     this.dust.update(time, pix);
-    this.embers.update(time, pix);
     this.magic.update(time, pix);
     this.fog.update(time);
     this.compass.rotation.z = time * 0.01;

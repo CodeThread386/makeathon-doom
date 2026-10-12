@@ -125,10 +125,13 @@ export class Engine {
 
     const mobile = matchMedia('(pointer: coarse)').matches || /Android|iPhone|iPad/i.test(navigator.userAgent);
     this.mobile = mobile;
-    // quality tiers: 0 high, 1 medium, 2 low
-    this.tier = this.software ? 2 : mobile ? 1 : 0;
+    // integrated laptop graphics get the medium tier: fewer cloth points, no MSAA, a lower pixel ratio
+    this.integrated = /Intel|UHD|Iris|Radeon\(TM\) Graphics|Radeon Vega|Vega \d+ Graphics|Mali|Adreno|PowerVR/i.test(this.gpu);
+    // quality tiers: 0 high, 1 medium, 2 low. Chosen once at boot so the look never changes mid-scroll;
+    // after that only the resolution adapts
+    this.tier = this.software ? 2 : mobile || this.integrated ? 1 : 0;
     if (opts.tier !== undefined) this.tier = opts.tier;
-    this.maxDpr = Math.min(window.devicePixelRatio || 1, this.tier === 0 ? 1.75 : this.tier === 1 ? 1.5 : 1);
+    this.maxDpr = Math.min(window.devicePixelRatio || 1, this.tier === 0 ? 1.75 : this.tier === 1 ? 1.25 : 1);
     this.scale = this.software ? 0.5 : 1;   // adaptive multiplier on the dpr
     this.minScale = 0.5;
 
@@ -289,7 +292,7 @@ export class Engine {
     const p75 = sorted[Math.floor(sorted.length * 0.75)];
     let s = this.scale;
     if (p75 > 1 / 48) s = Math.max(this.minScale, s - 0.12);
-    else if (p75 < 1 / 58 && s < 1) s = Math.min(1, s + 0.06);
+    else if (p75 < 1 / 58 && s < 1 && !this.busy) s = Math.min(1, s + 0.06);
     if (Math.abs(s - this.scale) > 0.01) {
       this.scale = s;
       this.resize();

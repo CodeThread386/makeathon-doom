@@ -154,6 +154,8 @@ export class Doom {
     this.model = gltf.scene;
     this.model.scale.setScalar(HEIGHT / SRC_HEIGHT);
     this.root.add(this.model);
+    // the soles stand on the dais (its top is 0.1 m above the floor), not inside it
+    this.root.position.y = 0.104;
     this.meshes = [];
     this.model.traverse((o) => {
       if (!o.isMesh) return;
